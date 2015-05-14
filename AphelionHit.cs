@@ -98,6 +98,13 @@ public class AphelionHit : MonoBehaviour {
 			if(shieldDone)
 				gameObject.GetComponent<BulletFireScript>().resetBullet();//quitar power up de aphelion
 		}
+		Expansive expansive = col.GetComponent<Expansive>();
+		if(expansive && !onCD)//si fue un enemigo
+		{
+			hitByExpansive(expansive, aphelion, col);
+			if(shieldDone)
+				gameObject.GetComponent<BulletFireScript>().resetBullet();//quitar power up de aphelion
+		}
 		
 		if(col.gameObject.name == "Kamikaze")
 		{
@@ -198,7 +205,22 @@ public class AphelionHit : MonoBehaviour {
 		Destroy (col.gameObject);//destruir la bala
 		Instantiate (exp.getExplosion(), fleet.transform.position, fleet.transform.rotation);//instanciar explosión
 	}
-	
+
+	void hitByExpansive(Expansive expansive, Aphelion aphelion, Collider2D col)
+	{
+		aphelion.reduceHealthOrShield(expansive.getDamage());//reducir hp de aphelion
+		SpriteRenderer sprite =  gameObject.GetComponent<SpriteRenderer>();
+		if(shieldDone)
+		{
+			sprite.color = new Color(1f,1f,1f,.5f);//cambiar sprite cuando lo golpean
+		}
+		StartCoroutine(coolDownDmg(sprite));//funcion de cooldown
+		//gameObject.GetComponent<Aphelion>().increaseScoreBy(expansive.getScore());//aumentar score de aphelion
+		//aphelion.updateScore();
+		//Destroy (col.gameObject);//destruir la bala
+		//Instantiate (exp.getExplosion(), fleet.transform.position, fleet.transform.rotation);//instanciar explosión
+	}
+
 	void hitByBarrage(BarrageFleet fleet, BarrageFleetDestroy exp, Aphelion aphelion, Collider2D col)
 	{
 		aphelion.reduceHealthOrShield(fleet.getDamage());//reducir hp de aphelion

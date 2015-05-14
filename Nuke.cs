@@ -26,7 +26,6 @@ public class Nuke : MonoBehaviour {
 					KamikazeFlicker kam = enemies[i].GetComponent<KamikazeFlicker>();
 					EliteBomber eliteBomber = enemies[i].GetComponent<EliteBomber>();
 					Smoke smoke = enemies[i].GetComponent<Smoke>();
-					
 					if(fleet){
 						aphelion.increaseScoreBy(fleet.getScore());
 						Destroy(enemies[i]);
@@ -76,11 +75,13 @@ public class Nuke : MonoBehaviour {
 						Destroy(enemies[i]);
 						Instantiate(explosion, enemies[i].transform.position, enemies[i].transform.rotation);
 					}
+
 					else if(eliteBomber)
 					{
 						eliteBomber.reduceHealthBy(eliteBomber.getInitialHealth()/8);
 						Instantiate(explosion, enemies[i].transform.position, enemies[i].transform.rotation);
 					}
+
 					else if(smoke)
 					{
 						Destroy(enemies[i]);

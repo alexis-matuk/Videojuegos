@@ -1,18 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class KamikazeAI : MonoBehaviour {
-
+public class MisilMovement : MonoBehaviour {
+	/*Declaración de variables*/
 	Transform target; //Aphelion
-	float moveSpeed; //velocidad
+	public float moveSpeed = 2500f; //velocidad
 	float rotationSpeed;
 	Transform myTransform; //posición de StFleet
 	
 	void Start()
 	{
 		myTransform = transform;
-		rotationSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Aphelion>().getSpeed();
-		moveSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Aphelion>().getSpeed()/1.5f + transform.parent.transform.parent.transform.gameObject.GetComponent<KamikazeFlicker>().getExtraSpeed();
+		//rotationSpeed = GameObject.FindGameObjectWithTag("Player").GetComponent<Aphelion>().getSpeed()*1f;
+		rotationSpeed = 2f;
 	}
 	
 	//rotar hacia el jugador
@@ -21,16 +21,13 @@ public class KamikazeAI : MonoBehaviour {
 		float x = target.position.x - myTransform.position.x;
 		float y = target.position.y - myTransform.position.y;
 		float angle = Mathf.Atan2(x, y) * Mathf.Rad2Deg;//cambiar vector dirección a ángulo
-		transform.parent.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0,0,-angle),Time.deltaTime*rotationSpeed);
-		transform.parent.parent.rotation = transform.parent.rotation;
+		transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0,0,-angle),Time.deltaTime*rotationSpeed);
 	}
 	
 	void Update () {
 		target = GameObject.FindWithTag("Player").transform; //actualizar posición de jugador cada frame
 		RotateToPlayer();//rotar hacia jugador
-		transform.parent.transform.parent.gameObject.GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0,1*moveSpeed));//moverse hacia adelante
-		transform.parent.position = transform.parent.parent.position;
-		transform.position = transform.parent.position;
+		GetComponent<Rigidbody2D>().AddRelativeForce(new Vector2(0,1*moveSpeed));//moverse hacia adelante
 		//transform.Translate(new Vector3(0,2,0));
 		restrictMovement();
 		
@@ -52,10 +49,5 @@ public class KamikazeAI : MonoBehaviour {
 		} else if (transform.position.y >= 535) {
 			transform.position = new Vector3(transform.position.x, 535, transform.position.z);
 		}
-	}
-	
-	public void multiplySpeed(float spe)
-	{
-		moveSpeed+=spe;
 	}
 }
