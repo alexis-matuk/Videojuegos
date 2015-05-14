@@ -25,6 +25,10 @@ public class Nuke : MonoBehaviour {
 					HolePuncher punch = enemies[i].GetComponent<HolePuncher>();
 					KamikazeFlicker kam = enemies[i].GetComponent<KamikazeFlicker>();
 					EliteBomber eliteBomber = enemies[i].GetComponent<EliteBomber>();
+					QueenAnne queen = enemies[i].GetComponent<QueenAnne>();
+					MineFlicker mine = enemies[i].GetComponent<MineFlicker>();
+					
+					
 					Smoke smoke = enemies[i].GetComponent<Smoke>();
 					if(fleet){
 						aphelion.increaseScoreBy(fleet.getScore());
@@ -80,6 +84,17 @@ public class Nuke : MonoBehaviour {
 					{
 						eliteBomber.reduceHealthBy(eliteBomber.getInitialHealth()/8);
 						Instantiate(explosion, enemies[i].transform.position, enemies[i].transform.rotation);
+					}
+					
+					else if(queen)
+					{
+						queen.reduceHealthBy(queen.getInitialHealth()/8);
+						Instantiate(explosion, enemies[i].transform.position, enemies[i].transform.rotation);
+					}
+					
+					else if(mine)
+					{
+						Destroy(enemies[i]);
 					}
 
 					else if(smoke)

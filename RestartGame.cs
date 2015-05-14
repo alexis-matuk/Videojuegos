@@ -5,10 +5,6 @@ using System.Collections;
 public class RestartGame : MonoBehaviour {
 	bool gameEnded = false;//boolean para determinar si se acabó el juego
 	
-	void Awake() {
-		DontDestroyOnLoad(transform.gameObject);
-	}
-	
 	void Start()
 	{
 		//quitar el mesh renderer de las paredes para un mejor efecto

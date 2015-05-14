@@ -10,7 +10,7 @@ public class QueenAnneExpansive : MonoBehaviour {
 	// Use this for initialization
 	void OnEnable () {
 		expansiveWave = Resources.Load<GameObject> ("Prefabs/Expansiva");
-		exp=(GameObject) Instantiate (expansiveWave, new Vector3(0,0,412), Quaternion.identity);
+		exp=(GameObject) Instantiate (expansiveWave, transform.position, Quaternion.identity);
 	
 	}
 	

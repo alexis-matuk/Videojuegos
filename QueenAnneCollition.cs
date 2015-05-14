@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class QueenAnneCollition : MonoBehaviour {
 
 	GameObject explosion;
 	Aphelion aphelion;
+	bool waitingDmg = false;
+	bool waitingDmgWave = false;
+	Image hpBar;
+	Text n;
 	
 	void Start()
 	{
 		aphelion = GameObject.FindGameObjectWithTag("Player").GetComponent<Aphelion>();//referencia a aphelion
 		explosion = Resources.Load<GameObject>("Prefabs/explosion");
+		hpBar = GameObject.Find("bossHp").GetComponent<Image>();
+		n = GameObject.Find("bossName").GetComponent<Text>();
 	}
 	
 	//mientras el trigger toque a la nave
@@ -53,6 +60,10 @@ public class QueenAnneCollition : MonoBehaviour {
 		StartCoroutine(retint (sprite));//corrutina para regresar a color normal
 		if(queenAnne.getHealth() <= 0)//si se destruye la nave
 		{
+			hpBar.enabled = false;
+			n.text = "";
+			n.enabled = false;
+			
 			aphelion.increaseScoreBy(queenAnne.getScore());//aumentar score
 			aphelion.updateScore();
 			Instantiate (explosion, transform.position, transform.rotation);//instanciar explosión
@@ -65,12 +76,19 @@ public class QueenAnneCollition : MonoBehaviour {
 	void hitByLaser(laserFire laser)
 	{
 		QueenAnne queenAnne = gameObject.GetComponent<QueenAnne>();
-		queenAnne.reduceHealthBy(laser.getDamage());
-		SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
-		sprite.color = new Color(1, 0, 0, 1);
-		StartCoroutine(retint (sprite));
+		if(!waitingDmg)
+		{
+			StartCoroutine(applyDamage(queenAnne, laser));
+			SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
+			sprite.color = new Color(1, 0, 0, 1);
+			StartCoroutine(retint (sprite));
+		}
 		if(queenAnne.getHealth() <= 0)
 		{
+			hpBar.enabled = false;
+			n.text = "";
+			n.enabled = false;
+			
 			aphelion.increaseScoreBy(queenAnne.getScore());
 			aphelion.updateScore();
 			Instantiate (explosion, transform.position, transform.rotation);
@@ -82,13 +100,20 @@ public class QueenAnneCollition : MonoBehaviour {
 	//hace lo mismo que hitByFireBurningBullet, pero para el caso de onda
 	void hitByWave(Wave wave)
 	{
-		QueenAnne queenAnne = gameObject.GetComponent<QueenAnne>();
-		queenAnne.reduceHealthBy(wave.getDamage());
-		SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
-		sprite.color = new Color(1, 0, 0, 1);
-		StartCoroutine(retint (sprite));
+		QueenAnne queenAnne = gameObject.GetComponent<QueenAnne>();		
+		if(!waitingDmgWave)
+		{
+			StartCoroutine(applyDamageWave(queenAnne, wave));
+			SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
+			sprite.color = new Color(1, 0, 0, 1);
+			StartCoroutine(retint (sprite));
+		}
 		if(queenAnne.getHealth() <= 0)
 		{
+			hpBar.enabled = false;
+			n.text = "";
+			n.enabled = false;
+			
 			aphelion.increaseScoreBy(queenAnne.getScore());
 			aphelion.updateScore();
 			Instantiate (explosion, transform.position, transform.rotation);
@@ -108,11 +133,31 @@ public class QueenAnneCollition : MonoBehaviour {
 		StartCoroutine(retint (sprite));
 		if(queenAnne.getHealth() <= 0)
 		{
+			hpBar.enabled = false;
+			n.text = "";
+			n.enabled = false;
+			
 			aphelion.increaseScoreBy(queenAnne.getScore());
 			aphelion.updateScore();
 			Instantiate (explosion, transform.position, transform.rotation);
 			Destroy (queenAnne.gameObject);
 		}
+	}
+	
+	IEnumerator applyDamage(QueenAnne fleet, laserFire laser)
+	{
+		waitingDmg = true;
+		fleet.reduceHealthBy(laser.getDamage());
+		yield return new WaitForSeconds(0.3f);
+		waitingDmg = false;
+	}
+	
+	IEnumerator applyDamageWave(QueenAnne fleet, Wave wave)
+	{
+		waitingDmgWave = true;
+		fleet.reduceHealthBy(wave.getDamage());
+		yield return new WaitForSeconds(0.1f);
+		waitingDmgWave = false;
 	}
 	
 	//corrutina para regresar al color original

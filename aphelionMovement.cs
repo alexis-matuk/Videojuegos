@@ -6,6 +6,7 @@ public class aphelionMovement : MonoBehaviour {
 	float speed;
 	bool controller = false;
 	
+	
 	void Start()
 	{
 		speed = gameObject.GetComponent<Aphelion>().getSpeed();
@@ -17,6 +18,12 @@ public class aphelionMovement : MonoBehaviour {
 	}
 	
 	void Update () {
+	
+	if(Input.GetKeyDown(KeyCode.Y))
+	{
+		Application.LoadLevel(1);
+	}
+	
 		float x = 0;
 		float y = 0;
 		if(!controller)

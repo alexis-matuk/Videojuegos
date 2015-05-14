@@ -30,12 +30,10 @@ public class Aphelion : MonoBehaviour {
 	Text shieldText;
 	Text restartLabel;
 	
-//	void Awake() {
-//		DontDestroyOnLoad(transform.gameObject);
-//	}
+	bool reset = false;
 	
-	void Start()
-	{
+	void Awake() {
+		DontDestroyOnLoad(transform.gameObject);
 		Score = GameObject.Find("Score").GetComponent<Text>();
 		permanentHealth = health;
 		permanentShield =  shield;
@@ -51,10 +49,34 @@ public class Aphelion : MonoBehaviour {
 		shieldBar.fillAmount = convertDamage(shield,permanentShield);
 		sh = Resources.Load<GameObject>("Prefabs/shield");
 	}
+
+	void OnLevelWasLoaded()
+	{
+		reset = false;
+	}
+	
+	
 	
 	void Update()
 	{
+		if(!reset)
+			resetHealth();
 		drawTempShield();
+	}
+	
+	void resetHealth()
+	{
+		if (Application.loadedLevel != 0) {
+			health = 30;
+			permanentHealth = health;
+			shield = 20;
+			permanentShield = shield;
+			hpBar.fillAmount = 1;
+			shieldBar.fillAmount = 1;
+			hpText.text = health.ToString();
+			shieldText.text =  shield.ToString();
+			reset = true;
+		}
 	}
 	
 	//obtener daño
